@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Chat-Socket</title>
+        <link rel="stylesheet" type="text/css" href="../public/css/style.css">
+    </head>
+
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+    <body>
+        <div class="chat">
+            <div class="chat-messages">
+                <ul id="message-list"></ul>
+            </div>
+            <form method="POST" class="input-form" id="chat-form">
+                <input type="text" id="message" class="input-box" placeholder="Type your message">
+                <button id="send" class="input-button">Send</button>
+            </form>
+        </div>
+    </body>
+    <script src="../public/js/script.js"></script>
+</html>
