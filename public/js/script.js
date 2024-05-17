@@ -17,6 +17,9 @@ roomlist = document.getElementById('room-list');
 
 //Event Listeners
 if(joinRoom){
+
+    socket.emit('lobby');
+
     joinRoom.addEventListener('submit', (event) => {
         event.preventDefault();
         console.log(roomname.value);
@@ -43,13 +46,10 @@ if(chat){
         }
     });
 
-    leave.addEventListener('click', () => {
-        socket.emit('leaveRoom', urlRoomName);
-    });
-    
 }
 
 socket.on('userConnection', (msg) => { //when the server sends the message to all users, recieve it here and append to the message list
+    console.log(msg);
     let item = document.createElement('li');
     item.innerHTML = msg;
     messageList.appendChild(item);
@@ -61,7 +61,17 @@ socket.on('chat message', (msg) => { //when the server sends the message to all 
     messageList.appendChild(item);
 });
 
-socket.on('userDisconnect', () => { //when the server says a user has disconnect, recieve it here and append to the message list
-    //console.log("User gone")
-    socket.emit('leaveRoom', window.location.pathname.split('/')[2]);
+socket.on('RoomList', (rooms) => { //when the server sends the list of rooms, recieve it here and append to the room list
+    roomlist.innerHTML = '';
+    if(rooms.length != 0){
+        rooms.forEach((room) => {
+            let item = document.createElement('li');
+            let a = document.createElement('a');
+            a.href = `/Rooms/${room}`;
+            a.innerHTML = room;
+            item.appendChild(a);
+            roomlist.appendChild(item);
+        }
+        );
+    }
 });

@@ -6,11 +6,12 @@
 
 <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
 <body>
+    <h1>Room List</h1>
+    <div class="room-list">
+        <ul id="room-list">
+        </ul>
+    </div>
     <form id="room-join">
-        <h1>Room List</h1>
-        <div class="room-list">
-            <ul id="room-list"></ul>
-        </div>
         <input type="text" id="room-name" class="input-box" placeholder="Type room name">
         <button id="create" class="input-button">Create Room</button>
     </form>

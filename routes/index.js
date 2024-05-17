@@ -1,7 +1,4 @@
-import chatRoutes from 'chat';
-
-const app = express();
-const server = createServer(app);
+import chatRoutes from './chat.js';
 
 const constructorMethod = (app) => {
     app.use('/', chatRoutes);

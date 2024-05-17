@@ -4,6 +4,7 @@ import express from 'express';
 import {createServer} from 'http';
 import { Server } from 'socket.io';
 import exphbs from 'express-handlebars';
+import configRoutes from './routes/index.js';
 import path from 'path';
 
 const app = express();
@@ -16,23 +17,11 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 //using handlebars, set the default view of the app at route /:id to index.html
-app.engine('html', exphbs.engine());
-app.set('view engine', 'html');
+app.engine('html', exphbs.engine({defaultLayout: 'rooms'}));
+app.set('view engine', 'handlebars');
 
-//GET and POST requests to LH3000/
-app.get('/Rooms', (req,res) => {
-    res.sendFile(path.resolve('views/rooms.html'));
-});
-app.post('/Rooms' , (req,res) => {
-    res.sendFile(path.resolve('views/rooms.html'));
-});
+configRoutes(app);
 
-app.get('/Rooms/:id', (req,res) => {
-    res.sendFile(path.resolve('views/index.html'));
-});
-app.post('/Rooms/:id' , (req,res) => {
-    res.sendFile(path.resolve('views/index.html'));
-});
 
 //Socket connections 
 io.on('connection', (socket) => { //when a user connects to the server
@@ -50,20 +39,25 @@ io.on('connection', (socket) => { //when a user connects to the server
         io.to(room).emit('userConnection', 'A user has joined the room'); //sends a message to all users that a user has connected
     });
 
-    socket.on("leaveRoom", (room) => { //when a user leaves a room
-        console.log("Leaving room:" + room)
-        io.to(room).emit('userConnection', 'A user has left the room');//sends a message to all users that a user has left
-        socket.leave(room); 
-    });
-
-    socket.on('disconnect', () => { //when a user disconnects from the server
-        console.log("User disconnected");
+    socket.on('disconnecting', () => { //when a user disconnects from the server
+        console.log("User disconnectinnnnn")
+        console.log(socket.rooms)
+        for (const roomName of socket.rooms) {
+            console.log("Leaving room:" + roomName)
+            io.to(roomName).emit('userConnection', 'A user has left');//sends a message to all users that a user has left
+        }
     });
 
     socket.on('chat message', (room, msg) => { //when a user sends a message
         console.log(socket.rooms);
         io.to(room).emit('chat message', msg); //sends the message to all users
     });
+
+    socket.on('lobby', () => { //when a user joins the lobby
+        console.log("Joining lobby");
+        socket.emit('RoomList', roomCollection); //sends the list of rooms to all users
+    });
+
 });
 
 server.listen(3000, () => {
