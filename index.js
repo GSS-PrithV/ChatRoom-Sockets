@@ -45,6 +45,7 @@ io.on('connection', (socket) => { //when a user connects to the server
         for (const roomName of socket.rooms) {
             console.log("Leaving room:" + roomName)
             io.to(roomName).emit('userConnection', 'A user has left');//sends a message to all users that a user has left
+            socket.leave(roomName);
         }
     });
 
